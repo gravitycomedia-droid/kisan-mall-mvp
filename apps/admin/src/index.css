@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+/* ─── Kisan Admin Design Tokens ─── */
+@theme {
+  --color-primary: #1F7A4E;
+  --color-primary-light: #2D9E68;
+  --color-primary-dark: #165C3A;
+  --color-primary-bg: #F0FBF5;
+  --color-brand-pink: #E91E8C;
+  --color-bg-cream: #FAF6EE;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #F9FAFB;
+  --color-text: #1A1A1A;
+  --color-text-muted: #6B7280;
+  --color-text-light: #9CA3AF;
+  --color-border: #E5E7EB;
+  --color-border-focus: #1F7A4E;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  --color-info: #3B82F6;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+}
+
+/* ─── CSS Variables ─── */
+:root {
+  --color-primary: #1F7A4E;
+  --color-primary-light: #2D9E68;
+  --color-primary-dark: #165C3A;
+  --color-primary-bg: #F0FBF5;
+  --color-brand-pink: #E91E8C;
+  --color-bg: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-sidebar: #111827;
+  --color-text: #1A1A1A;
+  --color-text-muted: #6B7280;
+  --color-border: #E5E7EB;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+}
+
+/* ─── Dark Mode (Admin) ─── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-sidebar: #111827;
+    --color-bg: #0F172A;
+    --color-surface: #1E293B;
+    --color-text: #F1F5F9;
+    --color-border: #334155;
+  }
+}
+
+/* ─── Base Styles ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

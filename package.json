@@ -1,0 +1,16 @@
+{
+  "name": "kisan-mall-mvp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:employee": "pnpm --filter employee dev",
+    "dev:admin": "pnpm --filter admin dev",
+    "dev": "pnpm --parallel dev:employee dev:admin",
+    "build:employee": "pnpm --filter employee build",
+    "build:admin": "pnpm --filter admin build",
+    "lint": "pnpm -r lint"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

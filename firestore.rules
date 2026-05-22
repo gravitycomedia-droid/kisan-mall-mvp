@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Employees ─────────────────────────────────────────────────────
+    // Public read: employees look themselves up by mobile number (no auth needed at login)
+    // Write: only admin Firebase Functions or authenticated admins
+    match /employees/{employeeId} {
+      allow read: if true;
+      allow write: if request.auth != null && isAdmin();
+    }
+
+    // ── Trainings ─────────────────────────────────────────────────────
+    // Employees can read active trainings only
+    // Admins can read/write all (including drafts)
+    match /trainings/{trainingId} {
+      allow read: if resource.data.status == 'active' || isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // ── Training Sections ─────────────────────────────────────────────
+    // Readable by everyone (no auth needed for section list)
+    // Writable by admin only
+    match /sections/{sectionId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Quizzes ───────────────────────────────────────────────────────
+    // Readable by everyone (employees access quiz after watching video)
+    // Writable by admin only
+    match /quizzes/{quizId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Completions ───────────────────────────────────────────────────
+    // Employees can CREATE their own completion record (no auth, identified by employeeId field)
+    // Admins can READ all completions for reporting
+    // No one can update or delete — records are immutable
+    match /completions/{completionId} {
+      allow create: if true;
+      allow read: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // ── Settings ──────────────────────────────────────────────────────
+    // Global app settings (e.g. maintenance mode, active week number)
+    // Readable by all, writable by admin only
+    match /settings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── Admins ────────────────────────────────────────────────────────
+    // Each admin document keyed by Firebase Auth UID
+    // Only the admin themselves can read/write their own doc
+    match /admins/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── Helper Functions ──────────────────────────────────────────────
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+  }
+}
