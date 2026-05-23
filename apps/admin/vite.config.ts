@@ -14,7 +14,6 @@ export default defineConfig({
   // Load .env from the monorepo root (two levels up from apps/admin)
   envDir: resolve(__dirname, '../../'),
   resolve: {
-    dedupe: ['firebase', '@firebase/app', '@firebase/firestore', '@firebase/auth', '@firebase/storage'],
     alias: {
       '@shared': resolve(__dirname, '../../shared'),
       '@': resolve(__dirname, './src'),
