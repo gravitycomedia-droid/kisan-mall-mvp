@@ -1,6 +1,6 @@
 {
   "buildCommand": "pnpm --filter employee build",
-  "outputDirectory": "apps/employee/dist",
+  "outputDirectory": "dist",
   "installCommand": "pnpm install",
   "framework": "vite",
   "rewrites": [
