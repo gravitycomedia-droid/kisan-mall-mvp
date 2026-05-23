@@ -93,6 +93,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* ─── Scrollbar ─── */
@@ -124,4 +126,29 @@ body {
 [lang="hi"],
 [lang="mr"] {
   font-family: "Noto Sans Devanagari", sans-serif;
+}
+
+/* ─── Animations ─── */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Mobile-first container ─── */
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Mux Player overrides ─── */
+mux-player {
+  --seek-backward-button: none;
+  --seek-forward-button: none;
+  width: 100%;
+  aspect-ratio: 9/16;
+  display: block;
 }

@@ -5,12 +5,26 @@
   "scripts": {
     "dev:employee": "pnpm --filter employee dev",
     "dev:admin": "pnpm --filter admin dev",
-    "dev": "pnpm --parallel dev:employee dev:admin",
+    "dev": "pnpm --filter employee --filter admin --parallel dev",
     "build:employee": "pnpm --filter employee build",
     "build:admin": "pnpm --filter admin build",
     "lint": "pnpm -r lint"
   },
   "devDependencies": {
     "typescript": "^5.7.3"
+  },
+  "dependencies": {
+    "@mux/mux-player-react": "^3.13.0",
+    "@tanstack/react-query": "^5.100.11",
+    "@types/nprogress": "^0.2.3",
+    "framer-motion": "^12.39.0",
+    "i18next": "^25.10.10",
+    "i18next-browser-languagedetector": "^8.2.1",
+    "lucide-react": "^0.511.0",
+    "nprogress": "^0.2.0",
+    "react-hot-toast": "^2.6.0",
+    "react-i18next": "^15.7.4",
+    "react-router-dom": "^7.15.1",
+    "zustand": "^5.0.13"
   }
 }

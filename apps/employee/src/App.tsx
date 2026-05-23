@@ -1,59 +1,100 @@
-export default function App() {
+import { useEffect } from 'react'
+import { Toaster } from 'react-hot-toast'
+import './i18n'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { AnimatePresence } from 'framer-motion'
+import { ProtectedRoute } from './router/ProtectedRoute'
+import { LanguagePicker } from './screens/LanguagePicker'
+import { Login } from './screens/Login'
+import { TrainingHome } from './screens/TrainingHome'
+import { VideoPlayer } from './screens/VideoPlayer'
+import { Quiz } from './screens/Quiz'
+import { Done } from './screens/Done'
+import { ErrorBoundary } from './components/ErrorBoundary'
+import { useEmployeeStore } from './store/useEmployeeStore'
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60 * 5,
+    },
+  },
+})
+
+function AnimatedRoutes() {
+  const location = useLocation()
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#FAF6EE',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontFamily: '"Plus Jakarta Sans", sans-serif',
-        gap: '8px',
-      }}
-    >
-      {/* Kisan Logo */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <span
-          style={{
-            fontSize: 32,
-            fontWeight: 800,
-            color: '#E91E8C',
-            letterSpacing: '-0.02em',
-          }}
-        >
-          KISAN
-        </span>
-        <span
-          style={{
-            fontSize: 10,
-            fontWeight: 500,
-            color: '#6B7280',
-            letterSpacing: '0.2em',
-          }}
-        >
-          FASHION MALL
-        </span>
-      </div>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<LanguagePicker />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <TrainingHome />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/video"
+          element={
+            <ProtectedRoute>
+              <VideoPlayer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/quiz"
+          element={
+            <ProtectedRoute>
+              <Quiz />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/done"
+          element={
+            <ProtectedRoute>
+              <Done />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
+  )
+}
 
-      <div style={{ height: 24 }} />
+export default function App() {
+  const isDarkMode = useEmployeeStore((s) => s.isDarkMode)
 
-      <div
-        style={{
-          background: '#1F7A4E',
-          color: '#fff',
-          padding: '12px 32px',
-          borderRadius: 12,
-          fontSize: 14,
-          fontWeight: 600,
-        }}
-      >
-        ✅ Employee App — Phase 0 Running
-      </div>
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [isDarkMode])
 
-      <p style={{ color: '#6B7280', fontSize: 13, marginTop: 8 }}>
-        Port 3000 · Firebase Connected · Phase 1 coming next
-      </p>
-    </div>
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AnimatedRoutes />
+          <Toaster 
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: isDarkMode ? '#1A2E22' : '#fff',
+                color: isDarkMode ? '#F0F4F2' : '#1A1A1A',
+                borderRadius: '12px',
+              }
+            }}
+          />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }

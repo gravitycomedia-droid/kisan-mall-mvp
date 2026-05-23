@@ -1,0 +1,13 @@
+id,brand_id,name,address,city,state,pin_code,phone,lat,lng
+1,1,NIZAMABAD Branch,"NH 63, Kumar Gali",Nizamabad,Telangana,503001,,18.85275759,78.07328809
+2,1,Kama Reddy Branch,"88CP+F3M Nizam Sagar, X Road",Kamareddy,Telangana,503111,,18.32055063,78.33484294
+3,1,Medak Branch,"Post Office Rd, Mission Compound, Medak",Medak,Telangana,502110,,18.18853488,78.23113678
+4,1,Suchitra Branch,"9A, M), Jeedimetla(v, Plot No 8A, 8B, Green Park Road, Quthbullapur",Hyderabad,Telangana,500067,,17.69051976,78.46856475
+5,1,Nirmal Branch,"Old Bus Stand Road, Zohra Nagar Colony",Nirmal,Telangana,504106,,19.0968764,78.34361057
+6,1,Korutla Branch,"Padala’s PNG Plaza, NH 63, beside Canara Bank, Hajipura",Korutla,Telangana,505326,,18.8239243,78.7198298
+7,1,Nanded Branch,"1-25-114 Plot No 117-C, Shivaji Nagar Late Ram Gopal Gupta Co-Operative Estate Ltd, Guru Gobind Singh Ji Rd, beside Gokul Restaurant",Nanded,Maharashtra,431602,,19.16771011,77.30518791
+8,1,Udgir Branch,"94QF+VP9, 63, National Highway, Khatib Colony, Vikas Nagar",Udgir,Maharashtra,413517,,18.38320301,77.12095732
+9,1,Parbhani Branch,"7Q3R+Q59, Anand Nagar",Parbhani,Maharashtra,431401,,19.25460275,76.79047604
+10,1,Latur Branch,"CH3J+3P2, Dayaram Rd, Gandhi Market, Sawe Wadi",Latur,Maharashtra,413512,,18.40309683,76.58172524
+11,3,Nizamabad Branch,"Sh No, 1-10-106, beside Akruthi, Phulong",Nizamabad,Telangana,503003,,18.66956519,78.10415921
+12,2,Nanded Branch,"5894+CXJ, Industrial Estate, Vishnu Nagar, Nanded",Nanded-Waghala,Maharashtra,431602,,19.16888718,77.30734971

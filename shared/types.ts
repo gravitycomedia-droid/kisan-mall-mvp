@@ -3,9 +3,9 @@ export type SupportedLanguage = 'en' | 'te' | 'hi' | 'mr'
 
 export interface LocalizedString {
   en: string
-  te: string
-  hi: string
-  mr: string
+  te?: string
+  hi?: string
+  mr?: string
 }
 
 // ─── Employee ──────────────────────────────────────────────────────
@@ -14,10 +14,14 @@ export interface Employee {
   name: string
   mobile: string
   department: string
+  storeId: number | null
   status: 'active' | 'inactive'
   lastCompletedWeek: number | null
   language: SupportedLanguage
+  managerName?: string
+  managerPhone?: string
   createdAt: Date
+  updatedAt?: Date
 }
 
 // ─── Training Section ──────────────────────────────────────────────
@@ -27,6 +31,7 @@ export interface TrainingSection {
   description: string
   videoCount: number
   createdAt: Date
+  updatedAt?: Date
 }
 
 // ─── Training (Video) ──────────────────────────────────────────────
@@ -35,6 +40,7 @@ export interface Training {
   title: LocalizedString
   section: string         // section ID
   sectionName: string
+  storeId: number | 'all'
   muxVideoId: string      // Mux playback ID
   thumbnailUrl: string
   description: LocalizedString
@@ -42,6 +48,9 @@ export interface Training {
   status: 'draft' | 'active'
   durationSeconds: number
   createdAt: Date
+  updatedAt?: Date
+  storageVideoUrl?: string | null
+  language?: string
 }
 
 // ─── Quiz ──────────────────────────────────────────────────────────

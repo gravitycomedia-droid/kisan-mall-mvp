@@ -1,0 +1,9 @@
+{
+  "buildCommand": "pnpm --filter employee build",
+  "outputDirectory": "apps/employee/dist",
+  "installCommand": "pnpm install",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

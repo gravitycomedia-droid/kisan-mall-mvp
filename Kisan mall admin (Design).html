@@ -1,0 +1,2443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kisan Mall — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ========== Tokens ========== */
+    :root {
+      --bg: #F6F2E8;
+      --bg-app: #FAF7EE;
+      --surface: #FFFFFF;
+      --ink: #1B1F1A;
+      --ink-2: #5A6058;
+      --ink-3: #8A8F86;
+      --ink-4: #B5B8AE;
+      --primary: #1F7A4E;
+      --primary-deep: #155F3C;
+      --primary-soft: #E5F1EA;
+      --primary-soft-2: #F1F8F4;
+      --accent: #E89A2B;
+      --accent-soft: #FBEFD6;
+      --danger: #B84A3E;
+      --danger-soft: #FBEDEB;
+      --info: #4A6FB8;
+      --info-soft: #EAF0FB;
+      --purple: #7B5FB8;
+      --purple-soft: #F0EBFA;
+      --line: #EAE2D0;
+      --line-2: #F1EADB;
+      --shadow-sm: 0 1px 3px rgba(27, 31, 26, 0.04);
+      --shadow-md: 0 4px 16px rgba(27, 31, 26, 0.06);
+      --shadow-lg: 0 12px 40px rgba(27, 31, 26, 0.10);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    button { font: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+    input, select, textarea { font: inherit; }
+    img, svg { display: block; }
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: #E8E1D0;
+      color: var(--ink);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      letter-spacing: -0.01em;
+      padding: 24px;
+      background:
+        radial-gradient(ellipse at top left, rgba(31, 122, 78, 0.06), transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(232, 154, 43, 0.05), transparent 50%),
+        #E8E1D0;
+    }
+
+    /* ========== Browser frame ========== */
+    .browser {
+      max-width: 1440px;
+      margin: 0 auto;
+      background: var(--bg-app);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 1px solid var(--line);
+    }
+    .browser__chrome {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px;
+      background: #F0EADB;
+      border-bottom: 1px solid var(--line);
+    }
+    .browser__dots {
+      display: flex;
+      gap: 7px;
+    }
+    .browser__dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .browser__dot:nth-child(1) { background: #FF5F57; }
+    .browser__dot:nth-child(2) { background: #FFBD2E; }
+    .browser__dot:nth-child(3) { background: #28C840; }
+    .browser__url {
+      flex: 1;
+      max-width: 420px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-pill);
+      padding: 6px 16px;
+      font-size: 13px;
+      color: var(--ink-2);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .browser__url svg { width: 12px; height: 12px; color: var(--ink-3); }
+    .browser__url-host { color: var(--ink); font-weight: 600; }
+
+    /* ========== App layout ========== */
+    .layout {
+      display: flex;
+      min-height: 880px;
+      max-height: 880px;
+    }
+    @media (max-width: 1100px) {
+      .layout { min-height: 800px; max-height: 800px; }
+    }
+
+    /* ========== Sidebar ========== */
+    .sidebar {
+      width: 248px;
+      flex-shrink: 0;
+      background: #FFFFFF;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      padding: 22px 16px 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 24px;
+      border-bottom: 1px solid var(--line-2);
+      margin-bottom: 16px;
+    }
+    .brand__mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: var(--primary);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(31, 122, 78, 0.25);
+    }
+    .brand__text { display: flex; flex-direction: column; line-height: 1.1; }
+    .brand__name { font-weight: 800; font-size: 15px; }
+    .brand__sub { font-size: 11px; font-weight: 600; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+
+    .nav-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      margin: 6px 0 8px;
+    }
+    .nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .nav__item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      width: 100%;
+      text-align: left;
+      position: relative;
+    }
+    .nav__item:hover { background: var(--bg); color: var(--ink); }
+    .nav__item svg { width: 18px; height: 18px; flex-shrink: 0; }
+    .nav__item.active {
+      background: var(--primary-soft);
+      color: var(--primary-deep);
+    }
+    .nav__item.active::before {
+      content: '';
+      position: absolute;
+      left: -16px;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      border-radius: 0 2px 2px 0;
+      background: var(--primary);
+    }
+    .nav__badge {
+      margin-left: auto;
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+    }
+
+    .sidebar__footer {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid var(--line-2);
+    }
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .user-chip:hover { background: var(--bg); }
+    .user-chip__avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1F7A4E, #155F3C);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .user-chip__main { flex: 1; min-width: 0; }
+    .user-chip__name { font-weight: 700; font-size: 13px; color: var(--ink); line-height: 1.2; }
+    .user-chip__role { font-size: 11px; color: var(--ink-3); font-weight: 500; margin-top: 1px; }
+    .user-chip__more { color: var(--ink-3); }
+    .user-chip__more svg { width: 16px; height: 16px; }
+
+    /* ========== Main ========== */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--bg-app);
+    }
+    .main::-webkit-scrollbar { width: 10px; }
+    .main::-webkit-scrollbar-track { background: transparent; }
+    .main::-webkit-scrollbar-thumb { background: var(--line); border-radius: 5px; border: 2px solid var(--bg-app); }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-app);
+      border-bottom: 1px solid var(--line-2);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar__title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    .topbar__breadcrumb {
+      font-size: 13px;
+      color: var(--ink-3);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .topbar__main { flex: 1; }
+    .topbar__actions { display: flex; align-items: center; gap: 12px; }
+    .search {
+      width: 280px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-pill);
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.2s ease;
+    }
+    .search:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+    .search svg { width: 16px; height: 16px; color: var(--ink-3); flex-shrink: 0; }
+    .search input { flex: 1; border: none; outline: none; background: transparent; font-size: 14px; color: var(--ink); }
+    .search input::placeholder { color: var(--ink-3); }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      color: var(--ink-2);
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .icon-btn:hover { color: var(--ink); border-color: var(--ink-3); }
+    .icon-btn svg { width: 18px; height: 18px; }
+    .icon-btn__dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--danger);
+      border: 2px solid #fff;
+    }
+
+    .content {
+      padding: 28px 32px 60px;
+    }
+
+    /* ========== Buttons ========== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .btn svg { width: 16px; height: 16px; }
+    .btn--primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(31, 122, 78, 0.20);
+    }
+    .btn--primary:hover { background: var(--primary-deep); }
+    .btn--outline {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .btn--outline:hover { border-color: var(--ink-3); }
+    .btn--ghost {
+      background: transparent;
+      color: var(--ink-2);
+    }
+    .btn--ghost:hover { background: var(--bg); color: var(--ink); }
+
+    /* ========== Screen system ========== */
+    .screen { display: none; }
+    .screen.active { display: block; animation: fadeUp 0.3s ease-out; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========== Section header ========== */
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .section-head__title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .section-head__sub {
+      font-size: 13px;
+      color: var(--ink-3);
+      font-weight: 500;
+      margin: 2px 0 0;
+    }
+
+    /* ============================================
+       DASHBOARD
+       ============================================ */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 1100px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .stat {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .stat:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
+    .stat__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 18px;
+    }
+    .stat__icon svg { width: 22px; height: 22px; }
+    .stat--green .stat__icon { background: var(--primary-soft); color: var(--primary); }
+    .stat--blue .stat__icon { background: var(--info-soft); color: var(--info); }
+    .stat--orange .stat__icon { background: var(--accent-soft); color: var(--accent); }
+    .stat--purple .stat__icon { background: var(--purple-soft); color: var(--purple); }
+    .stat__label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-3);
+      margin: 0 0 6px;
+    }
+    .stat__value {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: var(--ink);
+      margin: 0 0 8px;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat__delta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+    }
+    .stat__delta--up { background: var(--primary-soft); color: var(--primary-deep); }
+    .stat__delta--down { background: var(--danger-soft); color: var(--danger); }
+    .stat__delta svg { width: 12px; height: 12px; }
+    .stat__delta-text { font-size: 11px; color: var(--ink-3); font-weight: 600; margin-left: 6px; }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 1100px) {
+      .dash-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+    }
+    .card__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .card__title {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin: 0;
+    }
+    .card__sub {
+      font-size: 12px;
+      color: var(--ink-3);
+      font-weight: 500;
+      margin: 2px 0 0;
+    }
+    .card__link {
+      font-size: 13px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* ========== Chart ========== */
+    .chart {
+      width: 100%;
+      height: 220px;
+    }
+    .chart__legend {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 8px;
+    }
+    .chart__legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-2);
+    }
+    .chart__legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    /* ========== Pending list ========== */
+    .pending-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line-2);
+    }
+    .pending-item:last-child { border-bottom: none; }
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .avatar--1 { background: linear-gradient(135deg, #1F7A4E, #2D9968); }
+    .avatar--2 { background: linear-gradient(135deg, #E89A2B, #D8821A); }
+    .avatar--3 { background: linear-gradient(135deg, #4A6FB8, #3B5A9E); }
+    .avatar--4 { background: linear-gradient(135deg, #7B5FB8, #634A9E); }
+    .avatar--5 { background: linear-gradient(135deg, #B84A3E, #9E3B30); }
+    .avatar--6 { background: linear-gradient(135deg, #2D9968, #1F7A4E); }
+    .pending-item__main { flex: 1; min-width: 0; }
+    .pending-item__name { font-size: 14px; font-weight: 700; color: var(--ink); }
+    .pending-item__meta { font-size: 12px; color: var(--ink-3); font-weight: 500; margin-top: 2px; }
+    .pending-item__time {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--danger);
+      background: var(--danger-soft);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+
+    /* ========== Recent uploads ========== */
+    .upload-list { display: flex; flex-direction: column; gap: 14px; }
+    .upload-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+    .upload-item:hover { background: var(--bg); }
+    .upload-thumb {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      position: relative;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .upload-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.2);
+    }
+    .upload-thumb__play {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 2;
+      color: #fff;
+    }
+    .upload-thumb__play svg { width: 16px; height: 16px; fill: #fff; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
+    .upload-thumb--1 { background: linear-gradient(135deg, #1F4D3A, #2D6A4F); }
+    .upload-thumb--2 { background: linear-gradient(135deg, #5D3A1F, #8B5A2E); }
+    .upload-thumb--3 { background: linear-gradient(135deg, #B84A3E, #8B2E25); }
+    .upload-thumb--4 { background: linear-gradient(135deg, #4A6FB8, #2D4A8B); }
+    .upload-item__main { flex: 1; min-width: 0; }
+    .upload-item__title { font-size: 14px; font-weight: 700; color: var(--ink); line-height: 1.3; }
+    .upload-item__meta { font-size: 12px; color: var(--ink-3); font-weight: 500; margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+    .upload-item__dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-4); }
+
+    /* ========== Pills ========== */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      letter-spacing: 0.02em;
+    }
+    .pill--active { background: var(--primary-soft); color: var(--primary-deep); }
+    .pill--inactive { background: #F0EAD8; color: var(--ink-3); }
+    .pill--pending { background: var(--accent-soft); color: #B07621; }
+    .pill--complete { background: var(--primary-soft); color: var(--primary-deep); }
+    .pill--draft { background: #F0EAD8; color: var(--ink-2); }
+    .pill__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    /* ============================================
+       TRAININGS GRID
+       ============================================ */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .chip {
+      padding: 8px 14px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-2);
+      transition: all 0.15s ease;
+    }
+    .chip:hover { border-color: var(--ink-3); color: var(--ink); }
+    .chip.active {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    .train-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+    @media (max-width: 1100px) {
+      .train-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .train-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .train-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .train-card__thumb {
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+    }
+    .train-card__thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.5), transparent 50%);
+    }
+    .train-card__thumb--1 { background: linear-gradient(135deg, #1F4D3A, #2D6A4F); }
+    .train-card__thumb--2 { background: linear-gradient(135deg, #5D3A1F, #8B5A2E); }
+    .train-card__thumb--3 { background: linear-gradient(135deg, #B84A3E, #8B2E25); }
+    .train-card__thumb--4 { background: linear-gradient(135deg, #4A6FB8, #2D4A8B); }
+    .train-card__thumb--5 { background: linear-gradient(135deg, #7B5FB8, #4A2E8B); }
+    .train-card__thumb--6 { background: linear-gradient(135deg, #2D9968, #1F4D3A); }
+    .train-card__play {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 2;
+    }
+    .train-card__play-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.95);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .train-card__play-btn svg { width: 18px; height: 18px; fill: var(--primary); margin-left: 3px; }
+    .train-card__duration {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      z-index: 3;
+    }
+    .train-card__week {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 3;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .train-card__body { padding: 16px; }
+    .train-card__title {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0 0 8px;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .train-card__meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--ink-3);
+      font-weight: 500;
+    }
+    .train-card__cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .train-card__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-top: 1px solid var(--line-2);
+      background: var(--bg);
+    }
+    .train-card__langs {
+      display: flex;
+      gap: 4px;
+    }
+    .lang-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+      background: #fff;
+      border: 1px solid var(--line);
+      color: var(--ink-2);
+      letter-spacing: 0.04em;
+    }
+    .train-card__stat {
+      font-size: 12px;
+      color: var(--ink-2);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .train-card__stat svg { width: 13px; height: 13px; color: var(--ink-3); }
+
+    /* ============================================
+       EMPLOYEE TABLE
+       ============================================ */
+    .table-wrap {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .table-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line-2);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .table-head__left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .table-head__count {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .table-head__total {
+      font-size: 13px;
+      color: var(--ink-3);
+      font-weight: 600;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table thead th {
+      text-align: left;
+      padding: 12px 22px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-3);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+    .table tbody td {
+      padding: 14px 22px;
+      font-size: 14px;
+      color: var(--ink);
+      border-bottom: 1px solid var(--line-2);
+      vertical-align: middle;
+    }
+    .table tbody tr:last-child td { border-bottom: none; }
+    .table tbody tr:hover { background: var(--bg); }
+    .table__name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .table__name-text {
+      font-weight: 700;
+    }
+    .table__name-sub {
+      font-size: 12px;
+      color: var(--ink-3);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .table__mobile {
+      font-variant-numeric: tabular-nums;
+      font-weight: 500;
+      color: var(--ink-2);
+    }
+    .table__dept {
+      font-size: 13px;
+      color: var(--ink-2);
+      font-weight: 600;
+    }
+    .table__actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      justify-content: flex-end;
+    }
+    .row-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--ink-3);
+      transition: all 0.15s ease;
+    }
+    .row-btn:hover { background: var(--line-2); color: var(--ink); }
+    .row-btn svg { width: 16px; height: 16px; }
+
+    /* ============================================
+       REPORTS — filter row + KPI cards
+       ============================================ */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .filter-bar__group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-bar__label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .select {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 7px 14px 7px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      outline: none;
+      cursor: pointer;
+    }
+    .filter-bar__spacer { flex: 1; }
+
+    /* ============================================
+       SETTINGS
+       ============================================ */
+    .setting-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 32px;
+    }
+    @media (max-width: 1100px) {
+      .setting-grid { grid-template-columns: 1fr; }
+    }
+    .setting-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      position: sticky;
+      top: 20px;
+    }
+    .setting-nav__item {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .setting-nav__item:hover { background: var(--bg); color: var(--ink); }
+    .setting-nav__item.active { background: var(--primary-soft); color: var(--primary-deep); }
+    .setting-section {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+    .setting-section__title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      margin: 0 0 4px;
+    }
+    .setting-section__sub {
+      font-size: 13px;
+      color: var(--ink-3);
+      font-weight: 500;
+      margin: 0 0 22px;
+    }
+    .field {
+      margin-bottom: 18px;
+    }
+    .field__label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+    .field__sub {
+      font-size: 12px;
+      color: var(--ink-3);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .field__input {
+      width: 100%;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .field__input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+    .field__row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .logo-upload {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .logo-upload__current {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      background: var(--primary);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 30px;
+      box-shadow: var(--shadow-sm);
+    }
+    .logo-upload__actions { display: flex; flex-direction: column; gap: 6px; }
+    .logo-upload__hint { font-size: 12px; color: var(--ink-3); font-weight: 500; margin-top: 4px; }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line-2);
+    }
+    .toggle:last-child { border-bottom: none; }
+    .toggle__main { flex: 1; padding-right: 16px; }
+    .toggle__name { font-size: 14px; font-weight: 700; color: var(--ink); }
+    .toggle__sub { font-size: 12px; color: var(--ink-3); font-weight: 500; margin-top: 2px; }
+    .toggle__switch {
+      width: 42px;
+      height: 24px;
+      background: var(--line);
+      border-radius: var(--radius-pill);
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      flex-shrink: 0;
+    }
+    .toggle__switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+      transition: transform 0.2s ease;
+    }
+    .toggle__switch.on { background: var(--primary); }
+    .toggle__switch.on::after { transform: translateX(18px); }
+
+    /* ============================================
+       MODAL
+       ============================================ */
+    .modal-bg {
+      position: fixed;
+      inset: 0;
+      background: rgba(27, 31, 26, 0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    .modal-bg.active { display: flex; animation: fadeIn 0.2s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 28px;
+      border-bottom: 1px solid var(--line-2);
+    }
+    .modal__title { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; margin: 0; }
+    .modal__sub { font-size: 13px; color: var(--ink-3); font-weight: 500; margin: 2px 0 0; }
+    .modal__close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      color: var(--ink-3);
+      display: grid;
+      place-items: center;
+      transition: all 0.15s ease;
+    }
+    .modal__close:hover { background: var(--bg); color: var(--ink); }
+    .modal__close svg { width: 16px; height: 16px; }
+    .modal__body { padding: 24px 28px; }
+    .modal__foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 18px 28px;
+      border-top: 1px solid var(--line-2);
+      background: var(--bg);
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+    .upload-zone {
+      border: 1.5px dashed var(--line);
+      border-radius: var(--radius-md);
+      padding: 26px;
+      text-align: center;
+      background: var(--bg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .upload-zone:hover { border-color: var(--primary); background: var(--primary-soft-2); }
+    .upload-zone__icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 10px;
+      background: #fff;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .upload-zone__icon svg { width: 22px; height: 22px; }
+    .upload-zone__title { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+    .upload-zone__sub { font-size: 12px; color: var(--ink-3); font-weight: 500; }
+
+    /* ============================================
+       DEMO NAV
+       ============================================ */
+    .demo-nav {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(27, 31, 26, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: var(--radius-pill);
+      padding: 6px;
+      display: inline-flex;
+      gap: 2px;
+      z-index: 200;
+      box-shadow: var(--shadow-lg);
+    }
+    .demo-nav button {
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.65);
+      border-radius: var(--radius-pill);
+      transition: all 0.2s ease;
+    }
+    .demo-nav button:hover { color: rgba(255, 255, 255, 0.95); }
+    .demo-nav button.active { background: rgba(255, 255, 255, 0.15); color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="browser">
+    <!-- Browser chrome -->
+    <div class="browser__chrome">
+      <div class="browser__dots">
+        <span class="browser__dot"></span>
+        <span class="browser__dot"></span>
+        <span class="browser__dot"></span>
+      </div>
+      <div class="browser__url">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        <span><span class="browser__url-host">admin.kisanmall.com</span><span style="opacity: 0.5;">/dashboard</span></span>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- ========== SIDEBAR ========== -->
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand__mark">K</div>
+          <div class="brand__text">
+            <span class="brand__name">Kisan Mall</span>
+            <span class="brand__sub">Admin Console</span>
+          </div>
+        </div>
+
+        <p class="nav-label">Workspace</p>
+        <ul class="nav">
+          <li><button class="nav__item active" data-nav="dashboard" onclick="go('dashboard')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </button></li>
+          <li><button class="nav__item" data-nav="trainings" onclick="go('trainings')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            Trainings
+            <span class="nav__badge">24</span>
+          </button></li>
+          <li><button class="nav__item" data-nav="sections" onclick="go('sections')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+            Training Sections
+          </button></li>
+          <li><button class="nav__item" data-nav="quiz" onclick="go('quiz')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Quiz Management
+          </button></li>
+          <li><button class="nav__item" data-nav="employees" onclick="go('employees')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Employees
+            <span class="nav__badge">142</span>
+          </button></li>
+          <li><button class="nav__item" data-nav="reports" onclick="go('reports')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Reports
+          </button></li>
+        </ul>
+
+        <p class="nav-label" style="margin-top: 18px;">System</p>
+        <ul class="nav">
+          <li><button class="nav__item" data-nav="languages" onclick="go('languages')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg>
+            Languages
+          </button></li>
+          <li><button class="nav__item" data-nav="settings" onclick="go('settings')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            Settings
+          </button></li>
+        </ul>
+
+        <div class="sidebar__footer">
+          <div class="user-chip">
+            <div class="user-chip__avatar">PR</div>
+            <div class="user-chip__main">
+              <div class="user-chip__name">Priya Reddy</div>
+              <div class="user-chip__role">HR Manager</div>
+            </div>
+            <span class="user-chip__more">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+            </span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- ========== MAIN ========== -->
+      <main class="main">
+        <!-- Top bar -->
+        <div class="topbar">
+          <div class="topbar__main">
+            <h1 class="topbar__title" id="pageTitle">Dashboard</h1>
+            <div class="topbar__breadcrumb" id="pageBreadcrumb">Overview &middot; This Week</div>
+          </div>
+          <div class="topbar__actions">
+            <div class="search">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="Search employees, trainings..." />
+            </div>
+            <button class="icon-btn" aria-label="Notifications">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+              <span class="icon-btn__dot"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="content">
+
+          <!-- ============================================
+               DASHBOARD
+               ============================================ -->
+          <section class="screen active" data-screen="dashboard">
+            <div class="stat-grid">
+              <div class="stat stat--green">
+                <div class="stat__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                </div>
+                <p class="stat__label">Total Employees</p>
+                <p class="stat__value">142</p>
+                <div>
+                  <span class="stat__delta stat__delta--up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                    8
+                  </span>
+                  <span class="stat__delta-text">added this month</span>
+                </div>
+              </div>
+
+              <div class="stat stat--blue">
+                <div class="stat__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <p class="stat__label">Active Employees</p>
+                <p class="stat__value">128</p>
+                <div>
+                  <span class="stat__delta stat__delta--up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                    90%
+                  </span>
+                  <span class="stat__delta-text">activity rate</span>
+                </div>
+              </div>
+
+              <div class="stat stat--orange">
+                <div class="stat__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                </div>
+                <p class="stat__label">Trainings Created</p>
+                <p class="stat__value">24</p>
+                <div>
+                  <span class="stat__delta stat__delta--up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                    4
+                  </span>
+                  <span class="stat__delta-text">this week</span>
+                </div>
+              </div>
+
+              <div class="stat stat--purple">
+                <div class="stat__icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <p class="stat__label">Completion Rate</p>
+                <p class="stat__value">78%</p>
+                <div>
+                  <span class="stat__delta stat__delta--up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                    12%
+                  </span>
+                  <span class="stat__delta-text">vs last week</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="dash-grid">
+              <!-- Chart card -->
+              <div class="card">
+                <div class="card__head">
+                  <div>
+                    <h3 class="card__title">Weekly Completion</h3>
+                    <p class="card__sub">Last 7 days of training activity</p>
+                  </div>
+                  <div class="chart__legend">
+                    <div class="chart__legend-item">
+                      <span class="chart__legend-dot" style="background: var(--primary);"></span>
+                      Completed
+                    </div>
+                    <div class="chart__legend-item">
+                      <span class="chart__legend-dot" style="background: var(--line);"></span>
+                      Pending
+                    </div>
+                  </div>
+                </div>
+
+                <svg class="chart" viewBox="0 0 600 220" preserveAspectRatio="none">
+                  <!-- gridlines -->
+                  <line x1="0" y1="40" x2="600" y2="40" stroke="#F1EADB" stroke-width="1" stroke-dasharray="2 4"/>
+                  <line x1="0" y1="90" x2="600" y2="90" stroke="#F1EADB" stroke-width="1" stroke-dasharray="2 4"/>
+                  <line x1="0" y1="140" x2="600" y2="140" stroke="#F1EADB" stroke-width="1" stroke-dasharray="2 4"/>
+                  <line x1="0" y1="190" x2="600" y2="190" stroke="#F1EADB" stroke-width="1"/>
+
+                  <!-- bars: 7 days. each day = pair of bars (completed, pending). Group width ~75, bar width 24 each. -->
+                  <g font-family="Plus Jakarta Sans" font-size="11" font-weight="600" fill="#8A8F86">
+                    <!-- Mon -->
+                    <rect x="20" y="100" width="22" height="90" rx="4" fill="#1F7A4E"/>
+                    <rect x="46" y="140" width="22" height="50" rx="4" fill="#EAE2D0"/>
+                    <text x="44" y="208" text-anchor="middle">Mon</text>
+
+                    <!-- Tue -->
+                    <rect x="100" y="80" width="22" height="110" rx="4" fill="#1F7A4E"/>
+                    <rect x="126" y="150" width="22" height="40" rx="4" fill="#EAE2D0"/>
+                    <text x="124" y="208" text-anchor="middle">Tue</text>
+
+                    <!-- Wed -->
+                    <rect x="180" y="70" width="22" height="120" rx="4" fill="#1F7A4E"/>
+                    <rect x="206" y="160" width="22" height="30" rx="4" fill="#EAE2D0"/>
+                    <text x="204" y="208" text-anchor="middle">Wed</text>
+
+                    <!-- Thu -->
+                    <rect x="260" y="60" width="22" height="130" rx="4" fill="#1F7A4E"/>
+                    <rect x="286" y="155" width="22" height="35" rx="4" fill="#EAE2D0"/>
+                    <text x="284" y="208" text-anchor="middle">Thu</text>
+
+                    <!-- Fri -->
+                    <rect x="340" y="50" width="22" height="140" rx="4" fill="#1F7A4E"/>
+                    <rect x="366" y="165" width="22" height="25" rx="4" fill="#EAE2D0"/>
+                    <text x="364" y="208" text-anchor="middle">Fri</text>
+
+                    <!-- Sat -->
+                    <rect x="420" y="65" width="22" height="125" rx="4" fill="#1F7A4E"/>
+                    <rect x="446" y="155" width="22" height="35" rx="4" fill="#EAE2D0"/>
+                    <text x="444" y="208" text-anchor="middle">Sat</text>
+
+                    <!-- Sun -->
+                    <rect x="500" y="90" width="22" height="100" rx="4" fill="#1F7A4E"/>
+                    <rect x="526" y="145" width="22" height="45" rx="4" fill="#EAE2D0"/>
+                    <text x="524" y="208" text-anchor="middle">Sun</text>
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Recent uploads -->
+              <div class="card">
+                <div class="card__head">
+                  <div>
+                    <h3 class="card__title">Recent Uploads</h3>
+                    <p class="card__sub">Trainings added this week</p>
+                  </div>
+                  <a class="card__link" href="#" onclick="go('trainings'); return false;">View all</a>
+                </div>
+                <div class="upload-list">
+                  <div class="upload-item">
+                    <div class="upload-thumb upload-thumb--1">
+                      <div class="upload-thumb__play"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div>
+                    </div>
+                    <div class="upload-item__main">
+                      <div class="upload-item__title">Greeting Customers the Right Way</div>
+                      <div class="upload-item__meta"><span>Customer Service</span><span class="upload-item__dot"></span><span>1:10</span></div>
+                    </div>
+                  </div>
+                  <div class="upload-item">
+                    <div class="upload-thumb upload-thumb--2">
+                      <div class="upload-thumb__play"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div>
+                    </div>
+                    <div class="upload-item__main">
+                      <div class="upload-item__title">Handling Customer Returns</div>
+                      <div class="upload-item__meta"><span>Customer Service</span><span class="upload-item__dot"></span><span>1:42</span></div>
+                    </div>
+                  </div>
+                  <div class="upload-item">
+                    <div class="upload-thumb upload-thumb--3">
+                      <div class="upload-thumb__play"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div>
+                    </div>
+                    <div class="upload-item__main">
+                      <div class="upload-item__title">Fire Safety Basics</div>
+                      <div class="upload-item__meta"><span>Safety</span><span class="upload-item__dot"></span><span>2:05</span></div>
+                    </div>
+                  </div>
+                  <div class="upload-item">
+                    <div class="upload-thumb upload-thumb--4">
+                      <div class="upload-thumb__play"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div>
+                    </div>
+                    <div class="upload-item__main">
+                      <div class="upload-item__title">Sarees Product Knowledge</div>
+                      <div class="upload-item__meta"><span>Product Knowledge</span><span class="upload-item__dot"></span><span>1:55</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pending employees -->
+            <div class="card" style="margin-top: 16px;">
+              <div class="card__head">
+                <div>
+                  <h3 class="card__title">Employees Pending This Week's Training</h3>
+                  <p class="card__sub">14 employees haven't completed yet</p>
+                </div>
+                <a class="card__link" href="#">Send reminder</a>
+              </div>
+              <div class="pending-item">
+                <div class="avatar avatar--1">RK</div>
+                <div class="pending-item__main">
+                  <div class="pending-item__name">Ramesh Kumar</div>
+                  <div class="pending-item__meta">Floor 2 &middot; Sales &middot; +91 98765 43210</div>
+                </div>
+                <span class="pending-item__time">3 days overdue</span>
+              </div>
+              <div class="pending-item">
+                <div class="avatar avatar--2">SP</div>
+                <div class="pending-item__main">
+                  <div class="pending-item__name">Sunita Patil</div>
+                  <div class="pending-item__meta">Floor 1 &middot; Customer Service &middot; +91 98123 45678</div>
+                </div>
+                <span class="pending-item__time">2 days overdue</span>
+              </div>
+              <div class="pending-item">
+                <div class="avatar avatar--3">AS</div>
+                <div class="pending-item__main">
+                  <div class="pending-item__name">Anil Sharma</div>
+                  <div class="pending-item__meta">Floor 3 &middot; Stock &middot; +91 99887 12345</div>
+                </div>
+                <span class="pending-item__time">1 day overdue</span>
+              </div>
+              <div class="pending-item">
+                <div class="avatar avatar--4">DV</div>
+                <div class="pending-item__main">
+                  <div class="pending-item__name">Deepa Verma</div>
+                  <div class="pending-item__meta">Floor 1 &middot; Sales &middot; +91 91234 56789</div>
+                </div>
+                <span class="pending-item__time">1 day overdue</span>
+              </div>
+              <div class="pending-item">
+                <div class="avatar avatar--5">MJ</div>
+                <div class="pending-item__main">
+                  <div class="pending-item__name">Mahesh Joshi</div>
+                  <div class="pending-item__meta">Floor 2 &middot; Cashier &middot; +91 98989 87878</div>
+                </div>
+                <span class="pending-item__time">Today</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================
+               TRAININGS
+               ============================================ -->
+          <section class="screen" data-screen="trainings">
+            <div class="section-head">
+              <div>
+                <h2 class="section-head__title">All Trainings</h2>
+                <p class="section-head__sub">24 training videos across 5 sections</p>
+              </div>
+              <button class="btn btn--primary" onclick="openModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Create Training
+              </button>
+            </div>
+
+            <div class="filters">
+              <button class="chip active">All</button>
+              <button class="chip">Customer Service</button>
+              <button class="chip">Product Knowledge</button>
+              <button class="chip">Store Operations</button>
+              <button class="chip">Safety</button>
+              <button class="chip">Sales Training</button>
+            </div>
+
+            <div class="train-grid">
+              <div class="train-card">
+                <div class="train-card__thumb train-card__thumb--1">
+                  <span class="train-card__week">Week 24 &middot; Active</span>
+                  <div class="train-card__play"><div class="train-card__play-btn"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div></div>
+                  <span class="train-card__duration">1:10</span>
+                </div>
+                <div class="train-card__body">
+                  <h3 class="train-card__title">Greeting Customers the Right Way</h3>
+                  <div class="train-card__meta">
+                    <span class="train-card__cat">Customer Service</span>
+                  </div>
+                </div>
+                <div class="train-card__footer">
+                  <div class="train-card__langs">
+                    <span class="lang-pill">EN</span>
+                    <span class="lang-pill">TE</span>
+                    <span class="lang-pill">HI</span>
+                    <span class="lang-pill">MR</span>
+                  </div>
+                  <div class="train-card__stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    128 watched
+                  </div>
+                </div>
+              </div>
+
+              <div class="train-card">
+                <div class="train-card__thumb train-card__thumb--2">
+                  <span class="train-card__week">Week 23</span>
+                  <div class="train-card__play"><div class="train-card__play-btn"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div></div>
+                  <span class="train-card__duration">1:42</span>
+                </div>
+                <div class="train-card__body">
+                  <h3 class="train-card__title">Handling Customer Returns</h3>
+                  <div class="train-card__meta">
+                    <span class="train-card__cat">Customer Service</span>
+                  </div>
+                </div>
+                <div class="train-card__footer">
+                  <div class="train-card__langs">
+                    <span class="lang-pill">EN</span>
+                    <span class="lang-pill">TE</span>
+                    <span class="lang-pill">HI</span>
+                    <span class="lang-pill">MR</span>
+                  </div>
+                  <div class="train-card__stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    134 watched
+                  </div>
+                </div>
+              </div>
+
+              <div class="train-card">
+                <div class="train-card__thumb train-card__thumb--3">
+                  <span class="train-card__week">Week 22</span>
+                  <div class="train-card__play"><div class="train-card__play-btn"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div></div>
+                  <span class="train-card__duration">2:05</span>
+                </div>
+                <div class="train-card__body">
+                  <h3 class="train-card__title">Fire Safety Basics</h3>
+                  <div class="train-card__meta">
+                    <span class="train-card__cat">Safety Training</span>
+                  </div>
+                </div>
+                <div class="train-card__footer">
+                  <div class="train-card__langs">
+                    <span class="lang-pill">EN</span>
+                    <span class="lang-pill">TE</span>
+                    <span class="lang-pill">HI</span>
+                    <span class="lang-pill">MR</span>
+                  </div>
+                  <div class="train-card__stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    140 watched
+                  </div>
+                </div>
+              </div>
+
+              <div class="train-card">
+                <div class="train-card__thumb train-card__thumb--4">
+                  <span class="train-card__week">Week 22</span>
+                  <div class="train-card__play"><div class="train-card__play-btn"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div></div>
+                  <span class="train-card__duration">1:55</span>
+                </div>
+                <div class="train-card__body">
+                  <h3 class="train-card__title">Sarees Product Knowledge</h3>
+                  <div class="train-card__meta">
+                    <span class="train-card__cat">Product Knowledge</span>
+                  </div>
+                </div>
+                <div class="train-card__footer">
+                  <div class="train-card__langs">
+                    <span class="lang-pill">EN</span>
+                    <span class="lang-pill">TE</span>
+                    <span class="lang-pill">HI</span>
+                  </div>
+                  <div class="train-card__stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    121 watched
+                  </div>
+                </div>
+              </div>
+
+              <div class="train-card">
+                <div class="train-card__thumb train-card__thumb--5">
+                  <span class="train-card__week">Week 21</span>
+                  <div class="train-card__play"><div class="train-card__play-btn"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div></div>
+                  <span class="train-card__duration">1:30</span>
+                </div>
+                <div class="train-card__body">
+                  <h3 class="train-card__title">Cash Counter Operations</h3>
+                  <div class="train-card__meta">
+                    <span class="train-card__cat">Store Operations</span>
+                  </div>
+                </div>
+                <div class="train-card__footer">
+                  <div class="train-card__langs">
+                    <span class="lang-pill">EN</span>
+                    <span class="lang-pill">TE</span>
+                    <span class="lang-pill">HI</span>
+                    <span class="lang-pill">MR</span>
+                  </div>
+                  <div class="train-card__stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    138 watched
+                  </div>
+                </div>
+              </div>
+
+              <div class="train-card">
+                <div class="train-card__thumb train-card__thumb--6">
+                  <span class="train-card__week">Week 21</span>
+                  <div class="train-card__play"><div class="train-card__play-btn"><svg viewBox="0 0 24 24"><polygon points="6,4 22,12 6,20"/></svg></div></div>
+                  <span class="train-card__duration">2:18</span>
+                </div>
+                <div class="train-card__body">
+                  <h3 class="train-card__title">Upselling Techniques</h3>
+                  <div class="train-card__meta">
+                    <span class="train-card__cat">Sales Training</span>
+                  </div>
+                </div>
+                <div class="train-card__footer">
+                  <div class="train-card__langs">
+                    <span class="lang-pill">EN</span>
+                    <span class="lang-pill">TE</span>
+                  </div>
+                  <div class="train-card__stat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                    98 watched
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================
+               TRAINING SECTIONS
+               ============================================ -->
+          <section class="screen" data-screen="sections">
+            <div class="section-head">
+              <div>
+                <h2 class="section-head__title">Training Sections</h2>
+                <p class="section-head__sub">Group your trainings by category</p>
+              </div>
+              <button class="btn btn--primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Section
+              </button>
+            </div>
+
+            <div class="train-grid">
+              <div class="card" style="padding: 0;">
+                <div style="height: 6px; background: var(--primary); border-radius: var(--radius-lg) var(--radius-lg) 0 0;"></div>
+                <div style="padding: 22px;">
+                  <h3 style="font-size: 16px; font-weight: 800; margin: 0 0 4px;">Customer Service</h3>
+                  <p style="font-size: 13px; color: var(--ink-3); font-weight: 500; margin: 0 0 16px;">7 trainings</p>
+                  <div style="display: flex; gap: 6px;">
+                    <button class="btn btn--outline" style="padding: 6px 12px; font-size: 12px;">Edit</button>
+                    <button class="btn btn--ghost" style="padding: 6px 12px; font-size: 12px;">View</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="padding: 0;">
+                <div style="height: 6px; background: var(--accent); border-radius: var(--radius-lg) var(--radius-lg) 0 0;"></div>
+                <div style="padding: 22px;">
+                  <h3 style="font-size: 16px; font-weight: 800; margin: 0 0 4px;">Product Knowledge</h3>
+                  <p style="font-size: 13px; color: var(--ink-3); font-weight: 500; margin: 0 0 16px;">6 trainings</p>
+                  <div style="display: flex; gap: 6px;">
+                    <button class="btn btn--outline" style="padding: 6px 12px; font-size: 12px;">Edit</button>
+                    <button class="btn btn--ghost" style="padding: 6px 12px; font-size: 12px;">View</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="padding: 0;">
+                <div style="height: 6px; background: var(--info); border-radius: var(--radius-lg) var(--radius-lg) 0 0;"></div>
+                <div style="padding: 22px;">
+                  <h3 style="font-size: 16px; font-weight: 800; margin: 0 0 4px;">Store Operations</h3>
+                  <p style="font-size: 13px; color: var(--ink-3); font-weight: 500; margin: 0 0 16px;">5 trainings</p>
+                  <div style="display: flex; gap: 6px;">
+                    <button class="btn btn--outline" style="padding: 6px 12px; font-size: 12px;">Edit</button>
+                    <button class="btn btn--ghost" style="padding: 6px 12px; font-size: 12px;">View</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="padding: 0;">
+                <div style="height: 6px; background: var(--danger); border-radius: var(--radius-lg) var(--radius-lg) 0 0;"></div>
+                <div style="padding: 22px;">
+                  <h3 style="font-size: 16px; font-weight: 800; margin: 0 0 4px;">Safety Training</h3>
+                  <p style="font-size: 13px; color: var(--ink-3); font-weight: 500; margin: 0 0 16px;">3 trainings</p>
+                  <div style="display: flex; gap: 6px;">
+                    <button class="btn btn--outline" style="padding: 6px 12px; font-size: 12px;">Edit</button>
+                    <button class="btn btn--ghost" style="padding: 6px 12px; font-size: 12px;">View</button>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="padding: 0;">
+                <div style="height: 6px; background: var(--purple); border-radius: var(--radius-lg) var(--radius-lg) 0 0;"></div>
+                <div style="padding: 22px;">
+                  <h3 style="font-size: 16px; font-weight: 800; margin: 0 0 4px;">Sales Training</h3>
+                  <p style="font-size: 13px; color: var(--ink-3); font-weight: 500; margin: 0 0 16px;">3 trainings</p>
+                  <div style="display: flex; gap: 6px;">
+                    <button class="btn btn--outline" style="padding: 6px 12px; font-size: 12px;">Edit</button>
+                    <button class="btn btn--ghost" style="padding: 6px 12px; font-size: 12px;">View</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================
+               QUIZ MANAGEMENT
+               ============================================ -->
+          <section class="screen" data-screen="quiz">
+            <div class="section-head">
+              <div>
+                <h2 class="section-head__title">Quiz Management</h2>
+                <p class="section-head__sub">Edit questions for "Greeting Customers the Right Way"</p>
+              </div>
+              <button class="btn btn--primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Question
+              </button>
+            </div>
+
+            <div class="card">
+              <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px;">
+                <span class="pill pill--complete"><span class="pill__dot"></span>Active</span>
+                <span style="font-size: 13px; color: var(--ink-3); font-weight: 600;">Passing marks: 3 / 4</span>
+              </div>
+
+              <!-- Question 1 -->
+              <div style="padding: 18px; border: 1px solid var(--line); border-radius: var(--radius-md); margin-bottom: 12px;">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px;">
+                  <div style="flex: 1;">
+                    <div style="font-size: 12px; font-weight: 700; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">Question 1</div>
+                    <div style="font-size: 15px; font-weight: 700; color: var(--ink);">When a customer comes to the store, what should you do first?</div>
+                  </div>
+                  <div style="display: flex; gap: 4px;">
+                    <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">A. Keep doing your work</div>
+                  <div style="padding: 10px 12px; background: var(--primary-soft); border: 1px solid var(--primary); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--primary-deep); display: flex; align-items: center; gap: 8px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    B. Smile and say hello
+                  </div>
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">C. Wait for them to ask</div>
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">D. Call the manager</div>
+                </div>
+              </div>
+
+              <!-- Question 2 -->
+              <div style="padding: 18px; border: 1px solid var(--line); border-radius: var(--radius-md); margin-bottom: 12px;">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px;">
+                  <div style="flex: 1;">
+                    <div style="font-size: 12px; font-weight: 700; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">Question 2</div>
+                    <div style="font-size: 15px; font-weight: 700; color: var(--ink);">What should you do if a customer looks confused?</div>
+                  </div>
+                  <div style="display: flex; gap: 4px;">
+                    <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div style="padding: 10px 12px; background: var(--primary-soft); border: 1px solid var(--primary); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--primary-deep); display: flex; align-items: center; gap: 8px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    A. Walk up and offer help
+                  </div>
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">B. Ignore them</div>
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">C. Stare at them</div>
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">D. Walk away</div>
+                </div>
+              </div>
+
+              <!-- Question 3 -->
+              <div style="padding: 18px; border: 1px solid var(--line); border-radius: var(--radius-md);">
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px;">
+                  <div style="flex: 1;">
+                    <div style="font-size: 12px; font-weight: 700; color: var(--ink-3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px;">Question 3</div>
+                    <div style="font-size: 15px; font-weight: 700; color: var(--ink);">How should you end a conversation with a customer?</div>
+                  </div>
+                  <div style="display: flex; gap: 4px;">
+                    <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+                    <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">A. Just walk away</div>
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">B. Say nothing</div>
+                  <div style="padding: 10px 12px; background: var(--primary-soft); border: 1px solid var(--primary); border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--primary-deep); display: flex; align-items: center; gap: 8px;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    C. Thank them and smile
+                  </div>
+                  <div style="padding: 10px 12px; background: var(--bg); border-radius: 8px; font-size: 13px; font-weight: 500;">D. Look at your phone</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================
+               EMPLOYEES
+               ============================================ -->
+          <section class="screen" data-screen="employees">
+            <div class="section-head">
+              <div>
+                <h2 class="section-head__title">Employees</h2>
+                <p class="section-head__sub">Manage your store team</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn--outline">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Bulk Upload Excel
+                </button>
+                <button class="btn btn--primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add Employee
+                </button>
+              </div>
+            </div>
+
+            <div class="filters">
+              <button class="chip active">All Employees</button>
+              <button class="chip">Active (128)</button>
+              <button class="chip">Inactive (14)</button>
+              <button class="chip">Sales</button>
+              <button class="chip">Customer Service</button>
+              <button class="chip">Cashier</button>
+              <button class="chip">Stock</button>
+            </div>
+
+            <div class="table-wrap">
+              <div class="table-head">
+                <div class="table-head__left">
+                  <span class="table-head__count">142</span>
+                  <span class="table-head__total">employees</span>
+                </div>
+                <button class="btn btn--ghost" style="font-size: 13px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                  Filter
+                </button>
+              </div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Mobile</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Last Training</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <div class="table__name">
+                        <div class="avatar avatar--1">RK</div>
+                        <div>
+                          <div class="table__name-text">Ramesh Kumar</div>
+                          <div class="table__name-sub">Joined Jan 2024</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table__mobile">+91 98765 43210</td>
+                    <td class="table__dept">Sales</td>
+                    <td><span class="pill pill--active"><span class="pill__dot"></span>Active</span></td>
+                    <td>3 days ago</td>
+                    <td class="table__actions">
+                      <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table__name">
+                        <div class="avatar avatar--2">SP</div>
+                        <div>
+                          <div class="table__name-text">Sunita Patil</div>
+                          <div class="table__name-sub">Joined Mar 2023</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table__mobile">+91 98123 45678</td>
+                    <td class="table__dept">Customer Service</td>
+                    <td><span class="pill pill--active"><span class="pill__dot"></span>Active</span></td>
+                    <td>Today</td>
+                    <td class="table__actions">
+                      <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table__name">
+                        <div class="avatar avatar--3">AS</div>
+                        <div>
+                          <div class="table__name-text">Anil Sharma</div>
+                          <div class="table__name-sub">Joined Jun 2024</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table__mobile">+91 99887 12345</td>
+                    <td class="table__dept">Stock</td>
+                    <td><span class="pill pill--active"><span class="pill__dot"></span>Active</span></td>
+                    <td>1 week ago</td>
+                    <td class="table__actions">
+                      <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table__name">
+                        <div class="avatar avatar--4">DV</div>
+                        <div>
+                          <div class="table__name-text">Deepa Verma</div>
+                          <div class="table__name-sub">Joined Sep 2023</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table__mobile">+91 91234 56789</td>
+                    <td class="table__dept">Sales</td>
+                    <td><span class="pill pill--active"><span class="pill__dot"></span>Active</span></td>
+                    <td>Yesterday</td>
+                    <td class="table__actions">
+                      <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table__name">
+                        <div class="avatar avatar--5">MJ</div>
+                        <div>
+                          <div class="table__name-text">Mahesh Joshi</div>
+                          <div class="table__name-sub">Joined Feb 2024</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table__mobile">+91 98989 87878</td>
+                    <td class="table__dept">Cashier</td>
+                    <td><span class="pill pill--active"><span class="pill__dot"></span>Active</span></td>
+                    <td>4 days ago</td>
+                    <td class="table__actions">
+                      <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table__name">
+                        <div class="avatar avatar--6">LD</div>
+                        <div>
+                          <div class="table__name-text">Lakshmi Devi</div>
+                          <div class="table__name-sub">Joined Nov 2024</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table__mobile">+91 97070 11122</td>
+                    <td class="table__dept">Customer Service</td>
+                    <td><span class="pill pill--inactive"><span class="pill__dot"></span>Inactive</span></td>
+                    <td>2 weeks ago</td>
+                    <td class="table__actions">
+                      <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="table__name">
+                        <div class="avatar avatar--1">VK</div>
+                        <div>
+                          <div class="table__name-text">Vijay Kulkarni</div>
+                          <div class="table__name-sub">Joined Apr 2024</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="table__mobile">+91 99001 22334</td>
+                    <td class="table__dept">Sales</td>
+                    <td><span class="pill pill--active"><span class="pill__dot"></span>Active</span></td>
+                    <td>Today</td>
+                    <td class="table__actions">
+                      <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style="padding: 14px 22px; border-top: 1px solid var(--line-2); display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--ink-3); font-weight: 500;">
+                <span>Showing 1 - 7 of 142</span>
+                <div style="display: flex; gap: 6px;">
+                  <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+                  <button class="row-btn" style="background: var(--ink); color: #fff; font-weight: 700; width: auto; padding: 0 12px; font-size: 13px;">1</button>
+                  <button class="row-btn" style="width: auto; padding: 0 12px; font-size: 13px;">2</button>
+                  <button class="row-btn" style="width: auto; padding: 0 12px; font-size: 13px;">3</button>
+                  <button class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================
+               REPORTS
+               ============================================ -->
+          <section class="screen" data-screen="reports">
+            <div class="section-head">
+              <div>
+                <h2 class="section-head__title">Reports & Analytics</h2>
+                <p class="section-head__sub">Track training completion across your team</p>
+              </div>
+              <div style="display: flex; gap: 8px;">
+                <button class="btn btn--outline">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download Excel
+                </button>
+                <button class="btn btn--primary">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Download PDF
+                </button>
+              </div>
+            </div>
+
+            <div class="filter-bar">
+              <div class="filter-bar__group">
+                <span class="filter-bar__label">Date</span>
+                <select class="select">
+                  <option>This Week</option>
+                  <option>Last Week</option>
+                  <option>This Month</option>
+                  <option>Custom Range</option>
+                </select>
+              </div>
+              <div class="filter-bar__group">
+                <span class="filter-bar__label">Training</span>
+                <select class="select">
+                  <option>All Trainings</option>
+                  <option>Greeting Customers</option>
+                  <option>Handling Returns</option>
+                  <option>Fire Safety</option>
+                </select>
+              </div>
+              <div class="filter-bar__group">
+                <span class="filter-bar__label">Department</span>
+                <select class="select">
+                  <option>All Departments</option>
+                  <option>Sales</option>
+                  <option>Customer Service</option>
+                  <option>Cashier</option>
+                  <option>Stock</option>
+                </select>
+              </div>
+              <div class="filter-bar__group">
+                <span class="filter-bar__label">Status</span>
+                <select class="select">
+                  <option>All</option>
+                  <option>Completed</option>
+                  <option>Pending</option>
+                </select>
+              </div>
+              <div class="filter-bar__spacer"></div>
+              <button class="btn btn--ghost" style="font-size: 13px;">Reset</button>
+            </div>
+
+            <div class="stat-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 22px;">
+              <div class="stat stat--green">
+                <p class="stat__label">Completion Rate</p>
+                <p class="stat__value">78%</p>
+                <p style="font-size: 12px; color: var(--ink-3); font-weight: 500; margin: 0;">112 of 142 employees</p>
+              </div>
+              <div class="stat stat--blue">
+                <p class="stat__label">Average Quiz Score</p>
+                <p class="stat__value">4.2 <span style="font-size: 18px; color: var(--ink-3); font-weight: 600;">/ 5</span></p>
+                <p style="font-size: 12px; color: var(--ink-3); font-weight: 500; margin: 0;">Across all trainings</p>
+              </div>
+              <div class="stat stat--orange">
+                <p class="stat__label">Pending Trainings</p>
+                <p class="stat__value">30</p>
+                <p style="font-size: 12px; color: var(--ink-3); font-weight: 500; margin: 0;">Employees yet to complete</p>
+              </div>
+            </div>
+
+            <div class="table-wrap">
+              <div class="table-head">
+                <div class="table-head__left">
+                  <span class="table-head__count">Completion Report</span>
+                </div>
+                <span class="table-head__total">Showing 142 records</span>
+              </div>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Training</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="table__name"><div class="avatar avatar--1">RK</div><div class="table__name-text">Ramesh Kumar</div></div></td>
+                    <td>Greeting Customers</td>
+                    <td class="table__dept">Sales</td>
+                    <td><span class="pill pill--complete"><span class="pill__dot"></span>Completed</span></td>
+                    <td style="font-weight: 700;">5 / 5</td>
+                    <td style="color: var(--ink-2);">21 May 2026</td>
+                  </tr>
+                  <tr>
+                    <td><div class="table__name"><div class="avatar avatar--2">SP</div><div class="table__name-text">Sunita Patil</div></div></td>
+                    <td>Handling Returns</td>
+                    <td class="table__dept">Customer Service</td>
+                    <td><span class="pill pill--complete"><span class="pill__dot"></span>Completed</span></td>
+                    <td style="font-weight: 700;">4 / 5</td>
+                    <td style="color: var(--ink-2);">21 May 2026</td>
+                  </tr>
+                  <tr>
+                    <td><div class="table__name"><div class="avatar avatar--3">AS</div><div class="table__name-text">Anil Sharma</div></div></td>
+                    <td>Fire Safety Basics</td>
+                    <td class="table__dept">Stock</td>
+                    <td><span class="pill pill--pending"><span class="pill__dot"></span>Pending</span></td>
+                    <td style="color: var(--ink-3);">—</td>
+                    <td style="color: var(--ink-3);">—</td>
+                  </tr>
+                  <tr>
+                    <td><div class="table__name"><div class="avatar avatar--4">DV</div><div class="table__name-text">Deepa Verma</div></div></td>
+                    <td>Greeting Customers</td>
+                    <td class="table__dept">Sales</td>
+                    <td><span class="pill pill--complete"><span class="pill__dot"></span>Completed</span></td>
+                    <td style="font-weight: 700;">5 / 5</td>
+                    <td style="color: var(--ink-2);">20 May 2026</td>
+                  </tr>
+                  <tr>
+                    <td><div class="table__name"><div class="avatar avatar--5">MJ</div><div class="table__name-text">Mahesh Joshi</div></div></td>
+                    <td>Cash Counter Operations</td>
+                    <td class="table__dept">Cashier</td>
+                    <td><span class="pill pill--complete"><span class="pill__dot"></span>Completed</span></td>
+                    <td style="font-weight: 700;">3 / 5</td>
+                    <td style="color: var(--ink-2);">19 May 2026</td>
+                  </tr>
+                  <tr>
+                    <td><div class="table__name"><div class="avatar avatar--6">LD</div><div class="table__name-text">Lakshmi Devi</div></div></td>
+                    <td>Sarees Product Knowledge</td>
+                    <td class="table__dept">Customer Service</td>
+                    <td><span class="pill pill--pending"><span class="pill__dot"></span>Pending</span></td>
+                    <td style="color: var(--ink-3);">—</td>
+                    <td style="color: var(--ink-3);">—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- ============================================
+               LANGUAGES
+               ============================================ -->
+          <section class="screen" data-screen="languages">
+            <div class="section-head">
+              <div>
+                <h2 class="section-head__title">Languages</h2>
+                <p class="section-head__sub">Choose which languages your employees can use</p>
+              </div>
+            </div>
+
+            <div class="card" style="max-width: 720px;">
+              <div class="toggle">
+                <div class="toggle__main">
+                  <div class="toggle__name">English</div>
+                  <div class="toggle__sub">Default language</div>
+                </div>
+                <div class="toggle__switch on"></div>
+              </div>
+              <div class="toggle">
+                <div class="toggle__main">
+                  <div class="toggle__name">తెలుగు Telugu</div>
+                  <div class="toggle__sub">Telugu language for employees</div>
+                </div>
+                <div class="toggle__switch on"></div>
+              </div>
+              <div class="toggle">
+                <div class="toggle__main">
+                  <div class="toggle__name">हिंदी Hindi</div>
+                  <div class="toggle__sub">Hindi language for employees</div>
+                </div>
+                <div class="toggle__switch on"></div>
+              </div>
+              <div class="toggle">
+                <div class="toggle__main">
+                  <div class="toggle__name">मराठी Marathi</div>
+                  <div class="toggle__sub">Marathi language for employees</div>
+                </div>
+                <div class="toggle__switch on"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ============================================
+               SETTINGS
+               ============================================ -->
+          <section class="screen" data-screen="settings">
+            <div class="setting-grid">
+              <div class="setting-nav">
+                <div class="setting-nav__item active">Company Profile</div>
+                <div class="setting-nav__item">Manager Contact</div>
+                <div class="setting-nav__item">Notifications</div>
+                <div class="setting-nav__item">Reminder Settings</div>
+                <div class="setting-nav__item">Admin Password</div>
+              </div>
+
+              <div>
+                <div class="setting-section">
+                  <h3 class="setting-section__title">Company Profile</h3>
+                  <p class="setting-section__sub">This information is shown across the employee app</p>
+
+                  <div class="field">
+                    <label class="field__label">Company Logo</label>
+                    <div class="logo-upload">
+                      <div class="logo-upload__current">K</div>
+                      <div class="logo-upload__actions">
+                        <button class="btn btn--outline" style="padding: 8px 14px; font-size: 13px;">Upload New Logo</button>
+                        <button class="btn btn--ghost" style="padding: 8px 14px; font-size: 13px;">Remove</button>
+                        <span class="logo-upload__hint">PNG or JPG, square, at least 256×256 px</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <label class="field__label">Company Name</label>
+                    <input class="field__input" type="text" value="Kisan Fashion Mall" />
+                  </div>
+
+                  <button class="btn btn--primary" style="margin-top: 6px;">Save Changes</button>
+                </div>
+
+                <div class="setting-section">
+                  <h3 class="setting-section__title">Manager Contact</h3>
+                  <p class="setting-section__sub">The number employees will call when they tap "Call Manager"</p>
+                  <div class="field__row">
+                    <div class="field">
+                      <label class="field__label">Manager Name</label>
+                      <input class="field__input" type="text" value="Priya Reddy" />
+                    </div>
+                    <div class="field">
+                      <label class="field__label">Mobile Number</label>
+                      <input class="field__input" type="tel" value="+91 98765 12345" />
+                    </div>
+                  </div>
+                  <button class="btn btn--primary" style="margin-top: 6px;">Save Changes</button>
+                </div>
+
+                <div class="setting-section">
+                  <h3 class="setting-section__title">Notifications</h3>
+                  <p class="setting-section__sub">Email and reminder preferences</p>
+                  <div class="toggle">
+                    <div class="toggle__main">
+                      <div class="toggle__name">Daily completion email</div>
+                      <div class="toggle__sub">Receive a summary every evening</div>
+                    </div>
+                    <div class="toggle__switch on"></div>
+                  </div>
+                  <div class="toggle">
+                    <div class="toggle__main">
+                      <div class="toggle__name">Weekly reports</div>
+                      <div class="toggle__sub">Send the Monday morning recap</div>
+                    </div>
+                    <div class="toggle__switch on"></div>
+                  </div>
+                  <div class="toggle">
+                    <div class="toggle__main">
+                      <div class="toggle__name">Pending training alerts</div>
+                      <div class="toggle__sub">Notify when employees haven't completed</div>
+                    </div>
+                    <div class="toggle__switch"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ===== Modal: Create Training ===== -->
+  <div class="modal-bg" id="createModal" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal__head">
+        <div>
+          <h3 class="modal__title">Create New Training</h3>
+          <p class="modal__sub">Add a new training video for your employees</p>
+        </div>
+        <button class="modal__close" onclick="closeModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <div class="field">
+          <label class="field__label">Training Title</label>
+          <input class="field__input" type="text" placeholder="e.g. How to greet customers" />
+        </div>
+        <div class="field__row">
+          <div class="field">
+            <label class="field__label">Section</label>
+            <select class="field__input">
+              <option>Customer Service</option>
+              <option>Product Knowledge</option>
+              <option>Store Operations</option>
+              <option>Safety Training</option>
+              <option>Sales Training</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label">Training Week</label>
+            <input class="field__input" type="text" placeholder="Week 25" />
+          </div>
+        </div>
+        <div class="field">
+          <label class="field__label">Description</label>
+          <input class="field__input" type="text" placeholder="Short description" />
+        </div>
+        <div class="field">
+          <label class="field__label">Upload Video</label>
+          <p class="field__sub">Upload one video per language</p>
+          <div class="upload-zone">
+            <div class="upload-zone__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="upload-zone__title">Drop video here or click to browse</div>
+            <div class="upload-zone__sub">MP4, MOV up to 100 MB &middot; vertical 9:16 recommended</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal__foot">
+        <button class="btn btn--outline" onclick="closeModal()">Cancel</button>
+        <button class="btn btn--primary">Save as Draft</button>
+        <button class="btn btn--primary">Publish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Demo nav ===== -->
+  <nav class="demo-nav">
+    <button class="active" data-jump="dashboard" onclick="go('dashboard')">Dashboard</button>
+    <button data-jump="trainings" onclick="go('trainings')">Trainings</button>
+    <button data-jump="sections" onclick="go('sections')">Sections</button>
+    <button data-jump="quiz" onclick="go('quiz')">Quiz</button>
+    <button data-jump="employees" onclick="go('employees')">Employees</button>
+    <button data-jump="reports" onclick="go('reports')">Reports</button>
+    <button data-jump="languages" onclick="go('languages')">Languages</button>
+    <button data-jump="settings" onclick="go('settings')">Settings</button>
+  </nav>
+
+  <script>
+    const PAGE_META = {
+      dashboard: { title: 'Dashboard',          crumb: 'Overview · This Week' },
+      trainings: { title: 'Trainings',           crumb: 'Manage training videos' },
+      sections:  { title: 'Training Sections',   crumb: 'Group trainings by category' },
+      quiz:      { title: 'Quiz Management',     crumb: 'Edit quiz questions' },
+      employees: { title: 'Employees',           crumb: 'Team and access management' },
+      reports:   { title: 'Reports & Analytics', crumb: 'Track completion across teams' },
+      languages: { title: 'Languages',           crumb: 'Manage available languages' },
+      settings:  { title: 'Settings',            crumb: 'Configuration and preferences' },
+    };
+
+    function go(name) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const screen = document.querySelector('.screen[data-screen="' + name + '"]');
+      if (screen) screen.classList.add('active');
+
+      document.querySelectorAll('.nav__item').forEach(b => b.classList.remove('active'));
+      const navBtn = document.querySelector('.nav__item[data-nav="' + name + '"]');
+      if (navBtn) navBtn.classList.add('active');
+
+      document.querySelectorAll('.demo-nav button').forEach(b => b.classList.remove('active'));
+      const jumpBtn = document.querySelector('.demo-nav button[data-jump="' + name + '"]');
+      if (jumpBtn) jumpBtn.classList.add('active');
+
+      const meta = PAGE_META[name];
+      if (meta) {
+        document.getElementById('pageTitle').textContent = meta.title;
+        document.getElementById('pageBreadcrumb').textContent = meta.crumb;
+      }
+
+      const main = document.querySelector('.main');
+      if (main) main.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function openModal() { document.getElementById('createModal').classList.add('active'); }
+    function closeModal() { document.getElementById('createModal').classList.remove('active'); }
+
+    // Toggle switches
+    document.querySelectorAll('.toggle__switch').forEach(t => {
+      t.addEventListener('click', () => t.classList.toggle('on'));
+    });
+  </script>
+</body>
+</html>
